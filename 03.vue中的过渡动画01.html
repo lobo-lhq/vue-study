@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity .5s;
+        }
+
+        .fade-enter,
+        .fade-leave-to
+        /* .fade-leave-active below version 2.1.8 */
+
+            {
+            opacity: 0;
+        }
+
+        p {
+            display: inline-block;
+        }
+
+        /* // 进入时的类名 */
+
+        .rotate-enter {
+            opacity: 0;
+            /* transform: rotateZ(361deg); */
+        }
+
+        /* 进入结束之后的类名 */
+
+        .rotate-enter-to {
+            opacity: 1;
+            transform: rotateZ(720deg);
+        }
+
+        /* 整个进入过程中都会有的类名 */
+
+        .rotate-enter-active {
+            transition: all 1s;
+        }
+
+        /* // 进入时的类名 */
+
+        .rotate-leave {
+            /* opacity: 0; */
+            opacity: 1;
+            transform: rotateZ(0deg);
+            /* transform: rotateZ(361deg); */
+        }
+
+        /* 进入结束之后的类名 */
+
+        .rotate-leave-to {
+            /* opacity: 1; */
+            transform: rotateZ(720deg); 
+            opacity: 0;
+        }
+
+        /* 整个进入过程中都会有的类名 */
+
+        .rotate-leave-active {
+            transition: all 1s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="demo">
+        <!-- 如果逻辑代码很短 可以直接写在 v-on中 -->
+        <button v-on:click="show = !show">
+            Toggle
+        </button>
+        <!-- name 对应到 css中类名的开头 -->
+        <transition name="fade">
+            <p v-if="show">hello</p>
+        </transition>
+        <br>
+        <transition name="rotate">
+            <p v-if="show">nice to meet you</p>
+        </transition>
+    </div>
+</body>
+
+</html>
+<script src="./lib/vue.js"></script>
+<script>
+    new Vue({
+        el: '#demo',
+        data: {
+            show: false
+        }
+    })
+
+</script>

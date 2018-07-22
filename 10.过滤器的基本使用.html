@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <newslist></newslist>
+        <gossip></gossip>
+    </div>
+</body>
+
+</html>
+<script src="./lib/vue.js"></script>
+<script type="text/html" id="news">
+    <div>
+        <input type="text" v-model="message" placeholder="新增新闻" @keyup.enter="add">
+        <ul>
+            <li v-for="(item, index) in news" >{{item | cutShort('省略1w字') | addHeader |addGreenColor }}</li>
+        </ul>
+    </div>
+</script>
+<script type="text/html" id="gossip">
+    <div>
+        <h2>👩👨👩👨👩👨👩👨</h2>
+        <input type="text" v-model="message" placeholder="新增八卦" @keyup.enter="add">
+        <ul>
+            <li v-for="(item, index) in news" >{{item | cutShort('省略1w字') | addHeader |addGreenColor }}</li>
+        </ul>
+    </div>
+</script>
+<script>
+    // 1.定义一个名为newslist的组件
+    /*
+        template 如果要使用 script内部的内容作为模板需要写上#
+        data 函数 return一个对象
+        filters 如果直接写在组件中 只有这个组件可以使用 
+        如果要全局都可以使用
+    */
+    // 大写字母 ->小写
+    Vue.component('newslist', {
+        data: function () {
+            return {
+                // 新闻数据
+                news: [],
+                // 双向绑定的数据
+                message: '',
+            }
+        },
+        template: '#news',
+        methods: {
+            add() {
+                // console.log('新增了');
+                this.news.push(this.message);
+                this.message = '';
+            }
+        }
+        ,
+        filters: {
+            // value 需要显示的数据的 初始值
+            // 过滤的值会传入第一个形参
+            // 在模板中传递的参数 会依次设置给第二个,第三个形参
+            cutShort(value, word) {
+                // console.log(value);
+                // console.log('过滤啦');
+                // return value+'被过滤啦';
+                // 过长时 只显示前面的内容 后面拼上...
+                if (value.length > 10) {
+                    console.log('越界啦');
+                    console.log(value);
+                    console.log(word);
+                    // 截取前面的10个
+                    return value.slice(0, 10) + '...' + word;
+                } else {
+                    return value;
+                }
+            }
+            // 增加头部的过滤器
+            , addHeader(value) {
+                console.log(value);
+
+                return '广告位招租---' + value;
+            }
+        }
+    })
+
+    // 组件2
+    Vue.component('gossip', {
+        data: function () {
+            return {
+                // 新闻数据
+                news: [],
+                // 双向绑定的数据
+                message: '',
+            }
+        },
+        template: '#gossip',
+        methods: {
+            add() {
+                // console.log('新增了');
+                this.news.push(this.message);
+                this.message = '';
+            }
+        }
+        ,
+        filters: {
+            // value 需要显示的数据的 初始值
+            // 过滤的值会传入第一个形参
+            // 在模板中传递的参数 会依次设置给第二个,第三个形参
+            cutShort(value, word) {
+                // console.log(value);
+                // console.log('过滤啦');
+                // return value+'被过滤啦';
+                // 过长时 只显示前面的内容 后面拼上...
+                if (value.length > 10) {
+                    console.log('越界啦');
+                    console.log(value);
+                    console.log(word);
+                    // 截取前面的10个
+                    return value.slice(0, 10) + '...' + word;
+                } else {
+                    return value;
+                }
+            }
+            // 增加头部的过滤器
+            , addHeader(value) {
+                console.log(value);
+
+                return '广告位招租---' + value;
+            }
+        }
+    })
+
+
+    // 1.5全局过滤器
+    Vue.filter('addGreenColor', function (value) {
+        return '🥦'+value
+    })
+
+
+    // 2.实例化vue
+    let app = new Vue({
+        el: "#app"
+    })
+
+</script>
