@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .music {
+            height: 500px;
+            display: flex;
+        }
+
+        .music .left {
+            width: 500px;
+            background-color: rgb(155, 46, 19);
+            overflow-y: scroll;
+        }
+
+        .music .left input {
+            display: block;
+            margin: 10px auto;
+            height: 30px;
+            border-radius: 10px;
+            width: 400px;
+            padding-left: 20px;
+            border: none;
+        }
+
+        .music .left ul {
+            list-style: none;
+        }
+
+        .music .left ul li {
+            cursor: pointer;
+        }
+
+        .music .left ul li:hover {
+            color: white;
+            background-color: rgb(23, 187, 119);
+            font-weight: 700;
+            /* font-size:22px; */
+        }
+
+        .music .right {
+            flex: 1;
+            background-color: rgb(89, 12, 92);
+        }
+
+        .music .right img {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            display: block;
+            margin: 10px auto 0;
+        }
+
+        .music .right audio {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .auto-rotate {
+            animation: rotate linear infinite 10s;
+            animation-play-state: paused;
+        }
+
+        .play {
+            animation-play-state: running;
+        }
+
+        @keyframes rotate {
+            from {}
+            50% {
+                transform: rotateZ(180deg) scale(1.1, 1.1);
+            }
+            to {
+                transform: rotateZ(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <music-component></music-component>
+    </div>
+</body>
+
+</html>
+<script src="./lib/axios.min.js"></script>
+<script src="./lib/vue.js"></script>
+<script type="text/html" id="music">
+    <div class="music">
+        <div class="left">
+            <input type="text" v-model="musicName" placeholder="歌名" @keyup.enter="searchMusic">
+            <transition-group tag="ul" name="list-complete">
+<li @dblclick="playMusic(item.id)" v-for="item in musicList" :key="item.id" class="list-complete-item">
+                    {{item.name}}--{{item.artists[0].name}}
+                </li>
+            </transition-group>
+
+        </div>
+        <div class="right">
+            <img v-show="picUrl" class="auto-rotate" :class='{play:isPlay}' :src="picUrl" alt="">
+
+            <audio @play="play" @pause="pause" v-show="musicUrl" :src="musicUrl" autoplay controls></audio>
+        </div>
+    </div>
+</script>
+<script>
+    Vue.component('music-component', {
+        template: '#music',
+        data: function () {
+            return {
+                musicName: '',
+                musicList: [],
+                picUrl: null,
+                musicUrl: null,
+                isPlay: false
+            }
+        },
+        methods: {
+            searchMusic() {
+                axios
+                    .get(`http://39.108.140.202:3000/search?keywords=${this.musicName}`)
+                    .then((response) => {
+                        // console.log(response);
+                        this.musicList = response.data.result.songs;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            },
+            playMusic(id) {
+                axios
+                    .get(`http://39.108.140.202:3000/music/url?id=${id}`)
+                    .then((response) => {
+                        console.log(response);
+                        this.musicUrl = response.data.data[0].url;
+                    })
+                    .catch((error) => {
+                        // console.log(error);
+                    })
+                axios
+                    .get(`http://39.108.140.202:3000/song/detail?ids=${id}`)
+                    .then((response) => {
+                        console.log(response);
+                        this.picUrl = response.data.songs[0].al.picUrl;
+                    })
+                    .catch((error) => {
+                        // console.log(error);
+                    })
+            },
+            play(){
+                console.log('播放');
+                this.isPlay = true;
+            },
+            pause(){
+                console.log('暂停');
+                this.isPlay = false;
+            }
+        }
+
+    })
+    let app = new Vue({
+        el: '#app',
+    })
+</script>
